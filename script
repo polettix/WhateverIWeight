@@ -1,0 +1,54 @@
+Basic application idea:
+
+* record weights for people (one weight per day)
+* keep data for last month in a "lean" nosqldb
+* save all data in a "heavy" sqldb
+* provide exporting capabilities
+
+Use cases on the front end:
+
+1. Addition: simple form, write name and weight
+2. Consultation: see the data for last month
+3. Export: get hystorical data (not immediate) providing username and email
+
+Data format:
+
+* Data are simple and saved twice, one for the frontend and one for
+  the regular save by the backend
+* Data on frontend are saved only if belonging to the last month
+* Different saves are performed:
+  * STRING weight:<username>:<date> - keeps weight data by user/date
+  * SORTED SET user:<username>:dates - keeps dates using dates
+    as score and members
+  * SET users - keeps all usernames
+* The backend gets the data from a LIST new-weights, encoded in
+  JSON and containing both username and weight, used as a queue
+* The backend gets the export requests from a LIST export, encoded in
+  JSON and containing both username and email, used as a queue
+
+Use cases on the back end:
+
+1. Permanent save: get new data and save in sql database
+2. Export: send saved data of user to email
+
+The two activities will be carried out by two different daemons
+in the same backend worker
+
+
+Create a dotcloud.yml build file with the services
+
+   www:
+      type: perl
+   backend:
+      type: perl-worker
+   nosqldb:
+      type: redis
+   sqldb:
+      type: mysql
+
+Stuff for backend will be put in a sub and so for the frontend
+
+   $ mkdir backend www
+
+
+

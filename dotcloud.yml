@@ -1,0 +1,10 @@
+www:
+   type: perl
+   approot: www
+backend:
+   type: perl-worker
+   approot: backend
+nosqldb:
+   type: redis
+sqldb:
+   type: mysql
