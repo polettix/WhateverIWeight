@@ -44,7 +44,9 @@ my $reader   = new_redis();
 my $writer   = new_dbh();
 my $listener = new_redis();
 $listener->subscribe('new-weights', \&transfer_exports);
+INFO "performing initial transfer if needed...";
 transfer_exports(); # initial take
+INFO "waiting for more data...";
 $listener->wait_for_messages($config{timeout}) while 'necessary';
 
 sub transfer_exports {
@@ -53,19 +55,22 @@ sub transfer_exports {
       INSERT INTO whatever (date, stamp, username, weight)
       VALUES (?, ?, ?)
    ');
-   my $n = $reader->llen($list);
-   while ($n) {
-      my $element = $reader->lindex($list, 0);
-      INFO "got element to save: $element";
-      my $record = decode_json($element);
-      my ($date, $time) = epoch2date_time($record->{epoch});
-      $writer->do("DELETE FROM whatever WHERE username = ? AND date = ?",
-         undef, $record->{username}, $date);
-      $sth->execute($date, "$date $time", @{$record}{qw< username weight >});
-      $reader->lpop($list);
-      --$n;
+
+   while (my $n = $reader->llen($list)) {
+      while ($n > 0) {
+         my $element = $reader->lindex($list, 0);
+         INFO "got element to save: $element";
+         my $record = decode_json($element);
+         my ($date, $time) = epoch2date_time($record->{epoch});
+         $writer->do("DELETE FROM whatever WHERE username = ? AND date = ?",
+            undef, $record->{username}, $date);
+         $sth->execute($date, "$date $time", @{$record}{qw< username weight >});
+         $reader->lpop($list);
+         --$n;
+      }
    }
 
+   INFO "waiting for more data...";
    return;
 }
 
