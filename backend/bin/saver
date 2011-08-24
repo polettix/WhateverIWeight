@@ -51,7 +51,7 @@ $listener->wait_for_messages($config{timeout}) while 'necessary';
 sub transfer_exports {
    my $list = 'new-weights';
    my $sth = $writer->prepare('
-      INSERT INTO weight (date, stamp, username, weight)
+      INSERT INTO weight (day, stamp, username, weight)
       VALUES (?, ?, ?)
    ');
 
@@ -61,7 +61,7 @@ sub transfer_exports {
          INFO "got element to save: $element";
          my $record = decode_json($element);
          my ($date, $time) = epoch2date_time($record->{epoch});
-         $writer->do("DELETE FROM weight WHERE username = ? AND date = ?",
+         $writer->do("DELETE FROM weight WHERE username = ? AND day = ?",
             undef, $record->{username}, $date);
          $sth->execute($date, "$date $time", @{$record}{qw< username weight >});
          $reader->lpop($list);
