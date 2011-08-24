@@ -51,4 +51,21 @@ Stuff for backend will be put in a sub and so for the frontend
    $ mkdir backend www
 
 
+BACKEND
+
+Created a supervisord.conf file inside the backend subdirectory:
+
+   [program:exporter]
+   command = perl /home/dotcloud/current/bin/exporter
+
+   [program:saver]
+   command = perl /home/dotcloud/current/bin/saver
+
+The "current" subdir in /home/dotcloud always points to the current
+instance. The position of supervisord.conf is correct.
+
+The data for connecting to the databases can be found in
+/home/dotcloud/environment.json or /home/dotcloud/environment.yml.
+Added dependencies for both modules in Makefile.PL.
+
 

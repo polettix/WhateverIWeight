@@ -15,8 +15,14 @@ my $VERSION = '0.0.1';
 # Integrated logging facility
 use Log::Log4perl::Tiny qw( :easy :no_extra_logdie_message );
 Log::Log4perl->easy_init({level=>$INFO, layout=>'[%d %-5p] %m%n'});
+use JSON qw( decode_json );
+use File::Slurp qw( read_file );
+use Redis;
 
-my %config = ();
+my %config = (
+   dotcloud_environment => '/home/dotcloud/environment.json',
+   timeout => 60 * 60 *24 *365,
+);
 GetOptions(
    \%config,
    qw(
@@ -31,9 +37,27 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-while ('necessary') {
-   INFO "Here I am!";
-   sleep 5;
+load_dotcloud_environment();
+my $reader   = new_redis();
+my $listener = new_redis();
+$listener->subscribe('export', \&transfer_exports);
+transfer_exports(); # initial take
+$listener->wait_for_messages($config{timeout}) while 'necessary';
+
+sub transfer_exports {
+   
+}
+
+sub new_redis {
+   my $redis = Redis->new(server => "$config{DOTCLOUD_NOSQLDB_REDIS_HOST}:$config{DOTCLOUD_NOSQLDB_REDIS_PORT}");
+   $redis->auth($config{DOTCLOUD_NOSQLDB_REDIS_PASSWORD});
+   return $redis;
+}
+
+sub load_dotcloud_environment {
+   my $text = read_file($config{dotcloud_environment}, binmode => ':utf8');
+   my $hash = decode_json($text);
+   %config = (%$hash, %config);  # command line overrides if necessary
 }
 
 __END__

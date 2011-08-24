@@ -13,6 +13,12 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Log::Log4perl::Tiny' => 0,
+        'JSON' => '2.53',
+        'JSON::XS' => '2.32',
+        'YAML' => '0.73',
+        'YAML::XS' => '0.35',
+        'File::Slurp' => 0,
+        'Redis' => '1.904',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
