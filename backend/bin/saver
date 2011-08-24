@@ -46,7 +46,6 @@ my $listener = new_redis();
 $listener->subscribe('new-weights', \&transfer_exports);
 INFO "performing initial transfer if needed...";
 transfer_exports(); # initial take
-INFO "waiting for more data...";
 $listener->wait_for_messages($config{timeout}) while 'necessary';
 
 sub transfer_exports {
