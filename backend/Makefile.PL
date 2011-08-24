@@ -19,6 +19,8 @@ WriteMakefile(
         'YAML::XS' => '0.35',
         'File::Slurp' => 0,
         'Redis' => '1.904',
+        'DBI' => 0,
+        'DBD::mysql' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },

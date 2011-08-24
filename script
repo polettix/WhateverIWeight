@@ -22,7 +22,8 @@ Data format:
     as score and members
   * SET users - keeps all usernames
 * The backend gets the data from a LIST new-weights, encoded in
-  JSON and containing both username and weight, used as a queue
+  JSON and containing fields "epoch", "username" and "weight" (in grams),
+  used as a queue
 * The backend gets the export requests from a LIST export, encoded in
   JSON and containing both username and email, used as a queue
 
