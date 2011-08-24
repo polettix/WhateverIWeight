@@ -52,7 +52,7 @@ sub transfer_exports {
    my $list = 'new-weights';
    my $sth = $writer->prepare('
       INSERT INTO weight (day, stamp, username, weight)
-      VALUES (?, ?, ?)
+      VALUES (?, ?, ?, ?)
    ');
 
    while (my $n = $reader->llen($list)) {
