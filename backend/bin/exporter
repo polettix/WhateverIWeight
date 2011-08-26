@@ -115,8 +115,8 @@ sub send_email {
       });
       $writer->Part({
          encoding => 'Quoted-Printable',
-         ctype => 'text/csv; charset=UTF8',
-         disposition => qq{attachment;filename="$username.csv"},
+         ctype => qq{text/csv; charset=UTF8; name="$username.csv"},
+         disposition => qq{attachment; filename="$username.csv"},
          msg => $csv_text,
       });
       $writer->Close();
