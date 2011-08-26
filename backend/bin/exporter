@@ -59,8 +59,8 @@ sub serve_requests {
          INFO "got element to export: $element";
          my $request = decode_json($element);
 
-         send_email($record->{email}, $record->{username}, 
-            get_csv_for($record->{username}));
+         send_email($request->{email}, $request->{username},
+            get_csv_for($request->{username}));
 
          $reader->lpop($list);
          --$n;
@@ -107,7 +107,7 @@ sub send_email {
    $writer->Body({
       encoding => 'Quoted-Printable',
       ctype => 'text/plain; charset=UTF8',
-      msg => "Please find attached the data for user $username\n";
+      msg => "Please find attached the data for user $username\n",
    });
    $writer->Part({
       encoding => 'Quoted-Printable',
