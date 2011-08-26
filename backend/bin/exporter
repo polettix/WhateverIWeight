@@ -82,7 +82,7 @@ sub get_csv_for {
       ORDER BY stamp
    ');
    my $csv = Text::CSV_XS->new();
-   $csv->combine(qw< date weigth >);
+   $csv->combine(qw< date weight >);
    my @lines = $csv->string();
 
    $sth->execute($username);
