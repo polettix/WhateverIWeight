@@ -21,7 +21,7 @@ use Try::Tiny;
 my %config = (
    dotcloud_environment => '/home/dotcloud/environment.json',
    db => 'whatever',
-   smtp_host => 'smtp.mailgun.com',
+   smtp_host => 'smtp.mailgun.org',
    smtp_from => 'Whatever <whatever@polettix.mailgun.org>',
    smtp_username => 'whatever@polettix.mailgun.org',
    smtp_password => 'yapc2011',
