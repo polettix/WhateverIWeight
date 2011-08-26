@@ -16,6 +16,7 @@ use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
 use JSON qw( decode_json );
 use Mail::Sender;
 use Text::CSV_XS;
+use Try::Tiny;
 
 my %config = (
    dotcloud_environment => '/home/dotcloud/environment.json',
@@ -96,12 +97,13 @@ sub get_csv_for {
 sub send_email {
    my ($recipient, $username, $csv_text) = @_;
    my $writer = Mail::Sender->new(
-      on_errors => \&log_error,
+      on_errors => 'die',
       smtp => $config{smtp_host},
       from => $config{smtp_from},
       username => $config{smtp_username},
       password => $config{smtp_password},
    );
+   try {
    $writer->OpenMultipart({
       to => $recipient,
       subject => "Weights for $username",
@@ -117,8 +119,11 @@ sub send_email {
       msg => $csv_text,
    });
    $writer->Close();
+   }
+   catch {
+      ERROR "Mail::Sender complained: $writer->{error_msg}";
+   };
 }
-
 
 __END__
 
