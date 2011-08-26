@@ -9,14 +9,21 @@ my $VERSION = '0.0.1';
 
 use Log::Log4perl::Tiny qw( :easy :no_extra_logdie_message );
 Log::Log4perl->easy_init({level=>$INFO, layout=>'[%d %-5p] %m%n'});
+
+use File::Basename qw( dirname );
+use lib dirname(__FILE__) . '/../lib';
+use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
 use JSON qw( decode_json );
-use DBI;
 use Mail::Sender;
 
 my %config = (
    dotcloud_environment => '/home/dotcloud/environment.json',
    db => 'whatever',
    smtp_host => 'smtp.mailgun.com',
+   smtp_from => 'Whatever <whatever@polettix.mailgun.org>',
+   smtp_username => 'whatever@polettix.mailgun.org',
+   smtp_password => 'yapc2011',
+   timeout => 60 * 60 * 24 * 365,
 );
 GetOptions(
    \%config,
@@ -32,43 +39,84 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-load_dotcloud_environment();
-my $reader = new_dbh();
-my $writer = new_mailer();
+my $reader = get_sqldb_handle();
+my $listener = get_nosqldb_handle();
+$listener->subscribe('export', \&serve_requests);
+INFO 'serving pending requests if needed...';
+serve_requests();
 
-sub send_email {
-   my ($username, $recipient) = @_;
-
+while ('necessary') {
+   INFO 'waiting for more export requests...';
+   $listener->wait_for_messages($config{timeout});
 }
 
-sub new_mailer {
-   return Mail::Sender->new(
+sub serve_requests {
+   my $list = 'export';
+
+   while (my $n = $reader->llen($list)) {
+      while ($n > 0) {
+         my $element = $reader->lindex($list, 0);
+         INFO "got element to export: $element";
+         my $request = decode_json($element);
+
+         send_email($record->{email}, $record->{username}, 
+            get_csv_for($record->{username}));
+
+         $reader->lpop($list);
+         --$n;
+      }
+   }
+
+   return;
+}
+
+sub get_csv_for {
+   my ($username) = @_;
+
+   my $sth = $reader->prepare('
+      SELECT stamp, weight FROM weight
+      WHERE username = ?
+      ORDER BY stamp
+   ');
+   my $csv = Text::CSV_XS->new();
+   $csv->combine(qw< date weigth >);
+   my @lines = $csv->string();
+
+   $sth->execute($username);
+   while (my @row = $sth->fetchrow_array()) {
+      $csv->combine(@row);
+      push @lines, $csv->string();
+   }
+
+   return join '', @lines;
+}
+
+sub send_email {
+   my ($recipient, $username, $csv_text) = @_;
+   my $writer = Mail::Sender->new(
       on_errors => \&log_error,
       smtp => $config{smtp_host},
       from => $config{smtp_from},
+      username => $config{smtp_username},
+      password => $config{smtp_password},
    );
+   $writer->OpenMultipart({
+      to => $recipient,
+      subject => "Weights for $username",
+   });
+   $writer->Body({
+      encoding => 'Quoted-Printable',
+      ctype => 'text/plain; charset=UTF8',
+      msg => "Please find attached the data for user $username\n";
+   });
+   $writer->Part({
+      encoding => 'Quoted-Printable',
+      ctype => 'text/csv; charset=UTF8',
+      msg => $csv_text,
+   });
+   $writer->Close();
 }
 
-sub new_dbh {
-   my ($host, $port, $user, $pass)
-      = map { $config{"DOTCLOUD_SQLDB_MYSQL_$_"} } qw<
-         HOST
-         PORT
-         LOGIN
-         PASSWORD
-   >;
-   my $dbh = DBI->connect(
-      "dbi:mysql:database=$config{db};host=$host;port=$port",
-      $user, $pass, {RaiseError => 1},
-   );
-   return $dbh;
-}
-
-sub load_dotcloud_environment {
-   my $text = read_file($config{dotcloud_environment}, binmode => ':utf8');
-   my $hash = decode_json($text);
-   %config = (%$hash, %config);  # command line overrides if necessary
-}
 
 __END__
 

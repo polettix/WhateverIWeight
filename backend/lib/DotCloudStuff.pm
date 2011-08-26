@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use English qw( -no_match_vars );
-use 'Exporter' qw( import );
+use Exporter qw( import );
 
 our @EXPORT_OK = (
    qw<

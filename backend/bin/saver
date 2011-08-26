@@ -7,23 +7,17 @@ use Getopt::Long qw( :config gnu_getopt );
 use English qw( -no_match_vars );
 my $VERSION = '0.0.1';
 
-# Other recommended modules (uncomment to use):
-#  use IO::Prompt;
-#  use Readonly;
-#  use Data::Dumper;
-
-# Integrated logging facility
 use Log::Log4perl::Tiny qw( :easy :no_extra_logdie_message );
 Log::Log4perl->easy_init({level=>$INFO, layout=>'[%d %-5p] %m%n'});
+
+use File::Basename qw( dirname );
+use lib dirname(__FILE__) . '/../lib';
+use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
 use JSON qw( decode_json );
-use File::Slurp qw( read_file );
-use Redis;
-use DBI;
 
 my %config = (
    dotcloud_environment => '/home/dotcloud/environment.json',
-   timeout => 60 * 60 *24 *365,
-   db => 'whatever',
+   timeout => 60 * 60 * 24 * 365,
 );
 GetOptions(
    \%config,
@@ -39,14 +33,17 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-load_dotcloud_environment();
-my $reader   = new_redis();
-my $writer   = new_dbh();
-my $listener = new_redis();
+my $reader   = get_nosqldb_handle();
+my $writer   = get_sqldb_handle();
+my $listener = get_nosqldb_handle();
 $listener->subscribe('new-weights', \&transfer_exports);
 INFO "performing initial transfer if needed...";
 transfer_exports(); # initial take
-$listener->wait_for_messages($config{timeout}) while 'necessary';
+
+while ('necessary') {
+   INFO "waiting for more data...";
+   $listener->wait_for_messages($config{timeout});
+}
 
 sub transfer_exports {
    my $list = 'new-weights';
@@ -69,7 +66,6 @@ sub transfer_exports {
       }
    }
 
-   INFO "waiting for more data...";
    return;
 }
 
@@ -80,33 +76,6 @@ sub epoch2date_time {
    my $time = sprintf '%02d:%02d:%02d',
       $hour, $min, $sec;
    return ($date, $time);
-}
-
-sub new_redis {
-   my $redis = Redis->new(server => "$config{DOTCLOUD_NOSQLDB_REDIS_HOST}:$config{DOTCLOUD_NOSQLDB_REDIS_PORT}");
-   $redis->auth($config{DOTCLOUD_NOSQLDB_REDIS_PASSWORD});
-   return $redis;
-}
-
-sub new_dbh {
-   my ($host, $port, $user, $pass)
-      = map { $config{"DOTCLOUD_SQLDB_MYSQL_$_"} } qw<
-         HOST
-         PORT
-         LOGIN
-         PASSWORD
-   >;
-   my $dbh = DBI->connect(
-      "dbi:mysql:database=$config{db};host=$host;port=$port",
-      $user, $pass, {RaiseError => 1},
-   );
-   return $dbh;
-}
-
-sub load_dotcloud_environment {
-   my $text = read_file($config{dotcloud_environment}, binmode => ':utf8');
-   my $hash = decode_json($text);
-   %config = (%$hash, %config);  # command line overrides if necessary
 }
 
 __END__
