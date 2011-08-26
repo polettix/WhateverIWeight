@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <meta http-equiv="content-type"
+      content="text/html; charset=<% settings.charset %>">
+   <title>Whatever</title>
+   <style type="text/css">
+<!--
+div.header {
+   border-bottom: solid black 1px;
+   margin: 1em 0;
+}
+div.footer {
+   border-top: solid black 1px;
+   margin: 1em 0;
+}
+-->
+   </style>
+</head>
+<body>
+   <div id="container">
+      <% IF flash -%>
+      <div id="header">
+         <ul>
+         <% FOR notice = flash %>
+            <li><% notice %></li>
+         <% END%>
+         </ul>
+      </div>
+      <%- END %>
+      <div id="content"><% content %></div>
+      <div id="footer">Powered by Dancer, DotCloud and Whatever!</div>
+   </div>
+</body>
+</html>

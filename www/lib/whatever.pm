@@ -6,10 +6,11 @@ use Carp;
 use English qw( -no_match_vars );
 
 use Dancer;
+use Dancer::Plugin::FlashNote qw( flash );
 our $VERSION = '0.1';
 
 get '/' => sub {
-   return 'Hello, world!';
+   template 'index';
 };
 
 1;
