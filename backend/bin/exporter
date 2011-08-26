@@ -7,16 +7,17 @@ use Getopt::Long qw( :config gnu_getopt );
 use English qw( -no_match_vars );
 my $VERSION = '0.0.1';
 
-# Other recommended modules (uncomment to use):
-#  use IO::Prompt;
-#  use Readonly;
-#  use Data::Dumper;
-
-# Integrated logging facility
 use Log::Log4perl::Tiny qw( :easy :no_extra_logdie_message );
 Log::Log4perl->easy_init({level=>$INFO, layout=>'[%d %-5p] %m%n'});
+use JSON qw( decode_json );
+use DBI;
+use Mail::Sender;
 
-my %config = ();
+my %config = (
+   dotcloud_environment => '/home/dotcloud/environment.json',
+   db => 'whatever',
+   smtp_host => 'smtp.mailgun.com',
+);
 GetOptions(
    \%config,
    qw(
@@ -31,9 +32,42 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-while ('necessary') {
-   INFO "Here I am!";
-   sleep 5;
+load_dotcloud_environment();
+my $reader = new_dbh();
+my $writer = new_mailer();
+
+sub send_email {
+   my ($username, $recipient) = @_;
+
+}
+
+sub new_mailer {
+   return Mail::Sender->new(
+      on_errors => \&log_error,
+      smtp => $config{smtp_host},
+      from => $config{smtp_from},
+   );
+}
+
+sub new_dbh {
+   my ($host, $port, $user, $pass)
+      = map { $config{"DOTCLOUD_SQLDB_MYSQL_$_"} } qw<
+         HOST
+         PORT
+         LOGIN
+         PASSWORD
+   >;
+   my $dbh = DBI->connect(
+      "dbi:mysql:database=$config{db};host=$host;port=$port",
+      $user, $pass, {RaiseError => 1},
+   );
+   return $dbh;
+}
+
+sub load_dotcloud_environment {
+   my $text = read_file($config{dotcloud_environment}, binmode => ':utf8');
+   my $hash = decode_json($text);
+   %config = (%$hash, %config);  # command line overrides if necessary
 }
 
 __END__

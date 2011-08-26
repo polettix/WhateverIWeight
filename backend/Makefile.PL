@@ -21,6 +21,8 @@ WriteMakefile(
         'Redis' => '1.904',
         'DBI' => 0,
         'DBD::mysql' => 0,
+        'Mail::Sender' => 0,
+        'Text::CSV_XS' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
