@@ -103,22 +103,23 @@ sub send_email {
       username => $config{smtp_username},
       password => $config{smtp_password},
    );
+   INFO "WRITER: $writer";
    try {
-   $writer->OpenMultipart({
-      to => $recipient,
-      subject => "Weights for $username",
-   });
-   $writer->Body({
-      encoding => 'Quoted-Printable',
-      ctype => 'text/plain; charset=UTF8',
-      msg => "Please find attached the data for user $username\n",
-   });
-   $writer->Part({
-      encoding => 'Quoted-Printable',
-      ctype => 'text/csv; charset=UTF8',
-      msg => $csv_text,
-   });
-   $writer->Close();
+      $writer->OpenMultipart({
+         to => $recipient,
+         subject => "Weights for $username",
+      });
+      $writer->Body({
+         encoding => 'Quoted-Printable',
+         ctype => 'text/plain; charset=UTF8',
+         msg => "Please find attached the data for user $username\n",
+      });
+      $writer->Part({
+         encoding => 'Quoted-Printable',
+         ctype => 'text/csv; charset=UTF8',
+         msg => $csv_text,
+      });
+      $writer->Close();
    }
    catch {
       ERROR "Mail::Sender complained: $writer->{error_msg}";
