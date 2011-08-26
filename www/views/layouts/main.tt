@@ -6,11 +6,11 @@
    <title>Whatever</title>
    <style type="text/css">
 <!--
-div.header {
+div#header {
    border-bottom: solid black 1px;
    margin: 1em 0;
 }
-div.footer {
+div#footer {
    border-top: solid black 1px;
    margin: 1em 0;
 }
