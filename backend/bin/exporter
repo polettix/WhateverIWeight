@@ -15,6 +15,7 @@ use lib dirname(__FILE__) . '/../lib';
 use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
 use JSON qw( decode_json );
 use Mail::Sender;
+use Text::CSV_XS;
 
 my %config = (
    dotcloud_environment => '/home/dotcloud/environment.json',
