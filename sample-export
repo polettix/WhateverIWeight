@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use JSON qw( encode_json );
+use 5.012;
+
+my $stuff = encode_json({
+   username => $ARGV[0] || 'flavio',
+   email => $ARGV[1] || 'flavio@polettix.it',
+});
+
+$stuff =~ s/"/\\"/gmxs;
+
+say qq<"$stuff">;

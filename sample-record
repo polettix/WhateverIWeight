@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use JSON qw( encode_json );
+use 5.012;
+
+my $stuff = encode_json({
+   epoch => time(),
+   username => $ARGV[0] || 'flavio',
+   weight => $ARGV[1] || '82200',
+});
+
+$stuff =~ s/"/\\"/gmxs;
+
+say qq<"$stuff">;
