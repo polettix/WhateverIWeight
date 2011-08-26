@@ -17,6 +17,7 @@ WriteMakefile(
         'Dancer'     => 1.3070,
         'Plack::Request' => 0,
         'Template' => 0,
+        'Dancer::Plugin::FlashNote' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
