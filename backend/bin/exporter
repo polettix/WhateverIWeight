@@ -91,7 +91,7 @@ sub get_csv_for {
       push @lines, $csv->string();
    }
 
-   return join '', @lines;
+   return join "\n", @lines;
 }
 
 sub send_email {
@@ -116,6 +116,7 @@ sub send_email {
       $writer->Part({
          encoding => 'Quoted-Printable',
          ctype => 'text/csv; charset=UTF8',
+         disposition => qq{attachment; filename="$username.csv"},
          msg => $csv_text,
       });
       $writer->Close();
