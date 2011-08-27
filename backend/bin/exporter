@@ -44,7 +44,7 @@ pod2usage(-verbose => 2) if $config{man};
 my $reader = get_sqldb_handle();
 my $reception = get_nosqldb_handle();
 my $listener = get_nosqldb_handle();
-$listener->subscribe('export', \&serve_requests);
+$listener->subscribe('exports', \&serve_requests);
 INFO 'serving pending requests if needed...';
 serve_requests();
 
@@ -54,7 +54,7 @@ while ('necessary') {
 }
 
 sub serve_requests {
-   my $list = 'export';
+   my $list = 'exports';
 
    while (my $n = $reception->llen($list)) {
       while ($n > 0) {
