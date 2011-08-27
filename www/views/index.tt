@@ -1,1 +1,30 @@
-Whatever!
+<% # vim: set ft=html: %>
+<h1>Whatever!</h1>
+<h2>Record your weight</h2>
+<form action="/record" method="POST">
+   <label for="username">Username</label>
+   <input type="text" id="username" name="username" value="<% session.username %>">
+   <label for="date">Date</label>
+   <input type="text" id="date" name="date" value="<% date %>">
+   <label for="weight">Weight</label>
+   <input type="text" id="weight" name="weight" value="">
+   <input type="submit" name="submit" value="send">
+</form>
+<h2>Last month...</h2>
+<form action="/" method="POST">
+   <label for="username">Username</label>
+   <input type="text" id="username" name="username" value="<% session.username %>">
+   <input type="submit" name="submit" value="show">
+</form>
+<table>
+   <tr>
+      <th>Date</th>
+      <th>Weight</th>
+   </tr>
+<% FOR row = weights %>
+   <tr>
+      <td><% row.0 %></td>
+      <td><% row.1 %></td>
+   </tr>
+<% END %>
+</table>
