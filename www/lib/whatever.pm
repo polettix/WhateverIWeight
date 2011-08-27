@@ -59,7 +59,7 @@ post '/export' => sub {
 
 sub record_weight {
    my ($username, $datetime, $weight) = @_;
-   $username =~ /\A[\w.-]\z/mxs or die "invalid username $username\n";
+   $username =~ /\A[\w.-]+\z/mxs or die "invalid username $username\n";
    $weight = int($weight * 1000);
 
    $redis->multi();
