@@ -10,7 +10,7 @@ use Dancer::Plugin::FlashNote qw( flash );
 our $VERSION = '0.1';
 use Try::Tiny;
 use Time::Local qw( timelocal );
-use JSON qw( to_json );
+use JSON;
 
 use DotCloudStuff qw< get_nosqldb_handle >;
 
