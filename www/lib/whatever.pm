@@ -72,7 +72,7 @@ sub record_weight {
       (my $score = $date) =~ s/\D//gmxs;
       $redis->set("weight:$username:$date", $weight);
       $redis->set("tstamp:$username:$date", $datetime);
-      $redis->zadd("user:$username:dates", $date, $score);
+      $redis->zadd("user:$username:dates", $score, $date);
       $redis->sadd("users", $username);
    }
 
