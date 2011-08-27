@@ -2,43 +2,99 @@
 <html>
 <head>
    <meta http-equiv="content-type"
-      content="text/html; charset=<% settings.charset %>">
+      content="text/html; charset=utf-8">
    <title>Whatever</title>
    <style type="text/css">
 <!--
+html, body {
+   font-family: sans-serif;
+   font-size: 90%;
+}
+html, body, h1, h2, form, fieldset, ul, li {
+   margin: 0;
+   padding: 0;
+}
 div#header {
-   border-bottom: solid black 1px;
-   margin: 1em 0;
+   padding: 0.3em 0;
+   background-color: white;
+   text-align: center;
+}
+div#container {
+   margin: 1em auto;
+   background-color: white;
+   width: 60em;
 }
 div#footer {
    border-top: solid black 1px;
    margin: 1em 0;
+   padding-top: 0.3em;
+   background-color: white;
+   text-align: center;
 }
-table {
-   border-collapse: collapse;
+
+div.record {
+   padding: 0.3em;
+   float: left;
+   background-color: white;
 }
-table, th, td {
-   border: solid 1px black;
-   padding: 0.2em;
+form {
+  width: 19em;
 }
-ul, li {
+form fieldset {
+  border: 1px solid #aaa;
+  padding: 10px;
+}
+form label {
+   display: block;
+   float: left;
+   width: 5em;
+   margin: 5px 0.7em 0 0;
+   text-align: right;
+}
+form input {
+   display: block;
+   float: left;
+   width: 12em;
+   margin: 2px 0;
+   height: 1em;
+}
+div.center {
+   clear: both;
+   text-align: center;
+}
+form button {
+   margin-top: 0.5em;
+}
+
+div.clearer {
+   clear: both;
+}
+
+div#main {
+   padding: 0.3em;
+   padding-left: 21em;
+}
+ul {
    list-style: none;
+}
+li {
    display: inline;
+}
+div#main a, div#main a:visited, div#main a:hover {
+   text-decoration: none;
+   color: green;
+   padding: 0.1em 0.2em;
+}
+div#main a:hover {
+   color: white;
+   background-color: green
 }
 -->
    </style>
 </head>
 <body>
    <div id="container">
-      <% IF flash -%>
-      <div id="header">
-         <ul>
-         <% FOR notice = flash %>
-            <li><% notice %></li>
-         <% END%>
-         </ul>
-      </div>
-      <%- END %>
+      <div id="header"><h1>Whatever!</h1></div>
       <div id="content"><% content %></div>
       <div id="footer">Powered by Dancer, DotCloud and Whatever!</div>
    </div>

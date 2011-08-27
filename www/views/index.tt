@@ -1,42 +1,54 @@
 <% # vim: set ft=html: %>
-<h1>Whatever!</h1>
-<h2>Record your weight</h2>
+         <div class="record">
 <form action="/record" method="POST">
-   <label for="username">Username</label>
-   <input type="text" id="username" name="username" value="<% session.username %>">
-   <label for="date">Date</label>
-   <input type="text" id="date" name="date" value="<% date %>">
-   <label for="weight">Weight</label>
-   <input type="text" id="weight" name="weight" value="">
-   <input type="submit" name="submit" value="send">
+   <fieldset>
+      <legend>Record Weight</legend>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="">
+      <label for="date">Date</label>
+      <input type="text" id="date" name="date" value="">
+      <label for="weight">Weight</label>
+      <input type="text" id="weight" name="weight" value="">
+      <div class="center"><button type="submit">send</button></div>
+   </fieldset>
 </form>
-<h2>Last month<% IF session.username%> for <% session.username %><% END %>...</h2>
-<% IF users.size%>
-   <ul>
-   <% FOR user = users %>
-      <li><a href="/show/<% user %>"><% user %></a></li>
-   <% END %>
-   </ul>
-<% END %>
-<% IF weights.size %>
-<table>
-   <tr>
-      <th>Date</th>
-      <th>Weight</th>
-   </tr>
-   <% FOR row = weights %>
-   <tr>
-      <td><% row.0 %></td>
-      <td><% row.1 %></td>
-   </tr>
-   <% END %>
-</table>
-<% END %>
-<h2>Export data to your email</h2>
+         </div>
+
+         <div id="main">
+
+         <% IF users.size%>
+            <ul>
+            <% FOR user = users -%>
+               <li><a href="/show/<% user %>"><% user %></a></li>
+            <% END %>
+            </ul>
+         <% END %>
+
+         <% IF weights.size %>
+            <table>
+               <tr>
+                  <th>Date</th>
+                  <th>Weight</th>
+               </tr>
+               <% FOR row = weights %>
+               <tr>
+                  <td><% row.0 %></td>
+                  <td><% row.1 %></td>
+               </tr>
+               <% END %>
+            </table>
+         <% END %>
+
+         </div>
+         <div class="clearer"/>
+         <div class="record">
 <form action="/export" method="POST">
-   <label for="username">Username</label>
-   <input type="text" id="username" name="username" value="<% session.username %>">
-   <label for="email">Email</label>
-   <input type="text" id="email" name="email" value="<% session.email %>">
-   <input type="submit" name="submit" value="send">
+   <fieldset>
+      <legend>Export</legend>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" value="">
+      <div class="center"><button type="submit">send</button></div>
+   </fieldset>
 </form>
