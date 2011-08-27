@@ -97,7 +97,7 @@ sub date2epoch {
          \s+
          (\d{1,2}) : (\d{1,2}) : (\d{1,2})
          \z
-      } or die "invalid date format $datetime\n";
+      }mxs or die "invalid date format $datetime\n";
    return timelocal($sec, $min, $hour, $mday, $month - 1, $year - 1900);
 }
 
