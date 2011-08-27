@@ -19,7 +19,6 @@
    </ul>
 <% END %>
 <% IF weights.size %>
-<% weights.size %>
 <table>
    <tr>
       <th>Date</th>
