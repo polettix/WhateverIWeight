@@ -21,6 +21,10 @@ table, th, td {
    border: solid 1px black;
    padding: 0.2em;
 }
+ul, li {
+   list-style: none;
+   display: inline;
+}
 -->
    </style>
 </head>

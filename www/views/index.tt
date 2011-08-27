@@ -10,7 +10,7 @@
    <input type="text" id="weight" name="weight" value="">
    <input type="submit" name="submit" value="send">
 </form>
-<h2>Last month...</h2>
+<h2>Last month<% IF session.username%> for <% session.username %><% END %>...</h2>
 <% IF users.size%>
    <ul>
    <% FOR user = users %>
