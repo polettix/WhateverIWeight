@@ -96,6 +96,7 @@ div#main a:hover {
    <div id="container">
       <div id="header"><h1>Whatever!</h1></div>
       <div id="content"><% content %></div>
+      <div class="clearer"/>
       <div id="footer">Powered by Dancer, DotCloud and Whatever!</div>
    </div>
 </body>
