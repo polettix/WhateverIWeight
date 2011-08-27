@@ -18,8 +18,14 @@
 
          <% IF users.size%>
             <ul>
-            <% FOR user = users -%>
+            <%
+               FOR user = users ;
+                  IF user != session.user ;
+            -%>
                <li><a href="/show/<% user %>"><% user %></a></li>
+               <% ELSE %>
+               <li><% user %></li>
+               <% END %>
             <% END %>
             </ul>
          <% END %>
