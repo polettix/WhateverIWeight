@@ -13,7 +13,6 @@ use Time::Local qw( timelocal );
 
 use DotCloudStuff qw< get_nosqldb_handle >;
 
-my $redis = get_nosqldb_handle();
 
 get '/' => sub {
    my %p;
@@ -48,10 +47,12 @@ post '/export' => sub {
    session(username => $username);
    my $email  = params->{email};
    session(email => $email);
+   my $redis = get_nosqldb_handle();
    $redis->rpush('exports', to_json({
       username => $username,
       email => $email,
    }));
+   my $redis = get_nosqldb_handle();
    $redis->publish('exports', 'whatever');
    flash "recorded export request for $username to $email";
    redirect '/';
@@ -62,6 +63,7 @@ sub record_weight {
    $username =~ /\A[\w.-]+\z/mxs or die "invalid username $username\n";
    $weight = int($weight * 1000);
 
+   my $redis = get_nosqldb_handle();
    $redis->multi();
 
    $datetime =~ s{\A\s+|\s+\z}{}gmxs;
@@ -103,6 +105,7 @@ sub date2epoch {
 
 sub get_weights_of {
    my ($username) = @_;
+   my $redis = get_nosqldb_handle();
    my @retval = map {
       [
          $redis->get("tstamp:$username:$_")
@@ -119,6 +122,7 @@ sub epoch2date {
 }
 
 sub get_users {
+   my $redis = get_nosqldb_handle();
    return [ $redis->smembers('users') ];
 }
 
