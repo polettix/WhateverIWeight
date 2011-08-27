@@ -18,6 +18,8 @@ WriteMakefile(
         'Plack::Request' => 0,
         'Template' => 0,
         'Dancer::Plugin::FlashNote' => 0,
+        'JSON' => 0,
+        'Redis' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
