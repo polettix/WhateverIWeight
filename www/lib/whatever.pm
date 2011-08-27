@@ -11,7 +11,7 @@ our $VERSION = '0.1';
 
 use DotCloudStuff qw< get_nosqldb_handle >;
 
-$redis = get_nosqldb_handle();
+my $redis = get_nosqldb_handle();
 
 get '/' => sub {
    my %p;
