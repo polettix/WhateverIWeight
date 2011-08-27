@@ -18,13 +18,14 @@ Data format:
 * Data on frontend are saved only if belonging to the last month
 * Different saves are performed:
   * STRING weight:<username>:<date> - keeps weight data by user/date
+  * STRING tstamp:<username>:<date> - keeps timestamp data by user/date
   * SORTED SET user:<username>:dates - keeps dates using dates
     as score and members
   * SET users - keeps all usernames
 * The backend gets the data from a LIST new-weights, encoded in
   JSON and containing fields "epoch", "username" and "weight" (in grams),
   used as a queue
-* The backend gets the export requests from a LIST export, encoded in
+* The backend gets the export requests from a LIST exports, encoded in
   JSON and containing both username and email, used as a queue
 
 Use cases on the back end:

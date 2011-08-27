@@ -20,6 +20,7 @@ WriteMakefile(
         'Dancer::Plugin::FlashNote' => 0,
         'JSON' => 0,
         'Redis' => 0,
+        'Try::Tiny' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
