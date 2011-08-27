@@ -20,7 +20,7 @@
             <ul>
             <%
                FOR user = users ;
-                  IF user != session.user ;
+                  IF user != session.username ;
             -%>
                <li><a href="/show/<% user %>"><% user %></a></li>
                <% ELSE %>
