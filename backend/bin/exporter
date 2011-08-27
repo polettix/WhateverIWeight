@@ -86,8 +86,8 @@ sub get_csv_for {
    my @lines = $csv->string();
 
    $sth->execute($username);
-   while (my @row = $sth->fetchrow_array()) {
-      $csv->combine(@row);
+   while (my ($timestamp, $weight) = $sth->fetchrow_array()) {
+      $csv->combine($timestamp, $weight / 1000);
       push @lines, $csv->string();
    }
 
