@@ -104,8 +104,10 @@ sub date2epoch {
 sub get_weights_of {
    my ($username) = @_;
    my @retval = map {
-      $redis->get("tstamp:$username:$_")
-         => $redis->get("weight:$username:$_") / 1000;
+      [
+         $redis->get("tstamp:$username:$_")
+            => $redis->get("weight:$username:$_") / 1000
+      ]
    } $redis->zrangebyscore("user:$username:dates", '-inf', '+inf');
    return \@retval;
 }
