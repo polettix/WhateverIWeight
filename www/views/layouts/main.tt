@@ -38,7 +38,7 @@ div.record {
    background-color: white;
 }
 form {
-  width: 19em;
+  width: 19em; 
 }
 form fieldset {
   border: 1px solid #aaa;
@@ -89,14 +89,107 @@ div#main a:hover {
    color: white;
    background-color: green
 }
+table, tr, th, td {
+   border-collapse: collapse;
+   border: 1px solid #aaa;
+}
+th, td {
+   padding: 0.1em 0.3em;
+}
+td.weight {
+   text-align: right;
+   font-family: monospace;
+   font-weight: bold;
+}
+ul.weight li a, ul.weight li a:visited {
+   margin: 0 -1px;
+   text-decoration: none;
+   color: maroon;
+}
+div#side {
+   width: 20em;
+   float:left;
+}
+.int-weight {
+   font-size: 100%;
+}
+.half-kilo {
+   font-weight: bold;
+}
+.tick {
+   font-size: 70%;
+   font-weight: bold;
+   padding: 0;
+}
+input.weight {
+   width: 3em;
+}
+div#chooser {
+   padding: 0.3em;
+   display: none;
+   width: 12em;
+   text-align: center;
+   position: relative;
+   left: 1.1em;
+   top: -12px;
+   border: 1px dotted #aaa;
+   background-color: #fbfbfb;
+}
+div#shower {
+   margin: 2px 0 0 0.5em;
+   display: block;
+   width: 1.1em;
+   height: 1.1em;
+   text-align: center;
+   float: left;
+}
+div#shower a, div#shower a:visited {
+   text-decoration: none;
+   color: red;
+}
+ul.weight li a, ul.weight li a:visited {
+   margin: 0 -1px;
+   text-decoration: none;
+   color: maroon;
+}
+#shower-char {
+   font-family: monospace;
+   border: 1px solid #aaa;
+   text-align: center;
+   margin: 0;
+   padding: 0 2px;
+   display: block;
+}
 -->
    </style>
+   <script type="text/javascript">
+<!--
+   function toggle_weights() {
+      var shower = document.getElementById('shower-char');
+      var chooser = document.getElementById('chooser');
+      if (chooser.style.display == 'block') {
+         chooser.style.display = 'none';
+         shower.innerHTML = '+';   
+      }
+      else {
+         chooser.style.display = 'block';
+         shower.innerHTML = '-';   
+      }
+      return false;
+   }
+   function set_weight(weight) {
+      var element = document.getElementById('weight');
+      element.value = weight;
+      toggle_weights();
+      return false;
+   }
+-->
+   </script>
 </head>
 <body>
    <div id="container">
-      <div id="header"><h1>Whatever!</h1></div>
+      <div id="header"><h1>Whatever You Weight!</h1></div>
       <div id="content"><% content %></div>
-      <div class="clearer"/>
       <div id="footer">Powered by Dancer, DotCloud and Whatever!</div>
    </div>
 </body>

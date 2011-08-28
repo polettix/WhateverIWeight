@@ -1,30 +1,65 @@
 <% # vim: set ft=html: %>
+      <div id="side">
          <div class="record">
 <form action="/record" method="POST">
    <fieldset>
       <legend>Record Weight</legend>
       <label for="username">Username</label>
-      <input type="text" id="username" name="username" value="">
+      <input type="text" id="username" name="username" value="<% session.username %>">
       <label for="date">Date</label>
       <input type="text" id="date" name="date" value="">
       <label for="weight">Weight</label>
-      <input type="text" id="weight" name="weight" value="">
+      <input type="text" id="weight" name="weight" class="weight" value="">
+      <div id="shower">
+      <% IF chooser.size() %>
+         <a href="/" onclick="return toggle_weights()" id="shower-char">+</a>
+         <div id="chooser">
+            <ul class="weight">
+            <% FOR choice = chooser %>
+            <li class="<% choice.class %>">
+               <a href="<% choice.weight %>" title="<% choice.weight %>"
+                  onclick="return set_weight('<% choice.weight %>')"><%
+               IF choice.class == 'int-weight'
+            %><% choice.weight %><% ELSE %>|<% END %></a></li>
+            <% END %>
+            </ul>
+         </div>
+      <% END %>
+      </div>
       <div class="center"><button type="submit">send</button></div>
    </fieldset>
 </form>
          </div>
 
+         <div class="clearer"></div>
+
+         <div class="record">
+<form action="/export" method="POST">
+   <fieldset>
+      <legend>Export</legend>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" value="">
+      <div class="center"><button type="submit">send</button></div>
+   </fieldset>
+</form>
+         </div>
+      </div>
+
+
          <div id="main">
 
          <% IF users.size%>
             <ul>
+            <% IF session.username %>
+               <li><strong><% session.username %></strong></li>
+            <% END %>
             <%
                FOR user = users ;
                   IF user != session.username ;
             -%>
                <li><a href="/show/<% user %>"><% user %></a></li>
-               <% ELSE %>
-               <li><% user %></li>
                <% END %>
             <% END %>
             </ul>
@@ -39,22 +74,11 @@
                <% FOR row = weights %>
                <tr>
                   <td><% row.0 %></td>
-                  <td><% row.1 %></td>
+                  <td class="weight"><% row.1 %></td>
                </tr>
                <% END %>
             </table>
          <% END %>
 
          </div>
-         <div class="clearer"/>
-         <div class="record">
-<form action="/export" method="POST">
-   <fieldset>
-      <legend>Export</legend>
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" value="">
-      <label for="email">Email</label>
-      <input type="text" id="email" name="email" value="">
-      <div class="center"><button type="submit">send</button></div>
-   </fieldset>
-</form>
+         <div class="clearer"></div>

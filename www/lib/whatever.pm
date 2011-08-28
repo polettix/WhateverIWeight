@@ -17,8 +17,21 @@ use DotCloudStuff qw< get_nosqldb_handle >;
 get '/' => sub {
    my %p;
    session(username => params->{username}) if params->{username};
-   $p{weights} = get_weights_of(session('username'))
-      if session('username');
+   if (session('username')) {
+      $p{weights} = get_weights_of(session('username'));
+      my $last_weight = $p{weights}[-1][1];
+      my @range = map {
+         my $weight10 = $last_weight * 10 + $_;
+         my $class = $weight10 % 5 ? 'tick'
+            : $weight10 % 10 ? 'half-kilo'
+            :                  'int-weight';
+         {
+            weight => $weight10 / 10,
+            class  => $class,
+         };
+      } -12 .. 12;
+      $p{chooser} = \@range;
+   }
    $p{users} = get_users();
    template 'index', \%p;
 };
@@ -31,6 +44,10 @@ get '/show/:username' => sub {
 post '/record' => sub {
    my ($username, $date, $weight) = map { params->{$_} }
       qw< username date weight >;
+   $date ||= '';
+   $date =~ s/\A\s+|\s+\z//gmxs;
+   $date = epoch2date(time()) if ! length($date) || lc($date) eq 'now';
+   $date .= ' 08:00:00' unless $date =~ /\s/gmxs;
    session(username => $username);
    try {
       record_weight($username, $date, $weight);
@@ -109,7 +126,7 @@ sub get_weights_of {
    my @retval = map {
       [
          $redis->get("tstamp:$username:$_")
-            => $redis->get("weight:$username:$_") / 1000
+            => sprintf '%.1f', $redis->get("weight:$username:$_") / 1000
       ]
    } $redis->zrangebyscore("user:$username:dates", '-inf', '+inf');
    return \@retval;
