@@ -41,8 +41,6 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-my $reader = get_sqldb_handle();
-my $reception = get_nosqldb_handle();
 my $listener = get_nosqldb_handle();
 $listener->subscribe('exports', \&serve_requests);
 INFO 'serving pending requests if needed...';
@@ -56,16 +54,17 @@ while ('necessary') {
 sub serve_requests {
    my $list = 'exports';
 
-   while (my $n = $reception->llen($list)) {
+   my $reader = get_nosqldb_handle();
+   while (my $n = $reader->llen($list)) {
       while ($n > 0) {
-         my $element = $reception->lindex($list, 0);
+         my $element = $reader->lindex($list, 0);
          INFO "got element to export: $element";
          my $request = decode_json($element);
 
          send_email($request->{email}, $request->{username},
             get_csv_for($request->{username}));
 
-         $reception->lpop($list);
+         $reader->lpop($list);
          --$n;
       }
    }
@@ -76,7 +75,8 @@ sub serve_requests {
 sub get_csv_for {
    my ($username) = @_;
 
-   my $sth = $reader->prepare('
+   my $dbh = get_sqldb_handle();
+   my $sth = $dbh->prepare('
       SELECT stamp, weight FROM weight
       WHERE username = ?
       ORDER BY stamp

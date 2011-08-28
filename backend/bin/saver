@@ -33,8 +33,6 @@ pod2usage(-verbose => 99, -sections => 'USAGE|EXAMPLES|OPTIONS')
 pod2usage(-verbose => 2) if $config{man};
 
 # Script implementation here
-my $reader   = get_nosqldb_handle();
-my $writer   = get_sqldb_handle();
 my $listener = get_nosqldb_handle();
 $listener->subscribe('new-weights', \&transfer_exports);
 INFO "performing initial transfer if needed...";
@@ -47,18 +45,20 @@ while ('necessary') {
 
 sub transfer_exports {
    my $list = 'new-weights';
-   my $sth = $writer->prepare('
+   my $dbh   = get_sqldb_handle();
+   my $sth = $dbh->prepare('
       INSERT INTO weight (day, stamp, username, weight)
       VALUES (?, ?, ?, ?)
    ');
 
+   my $reader   = get_nosqldb_handle();
    while (my $n = $reader->llen($list)) {
       while ($n > 0) {
          my $element = $reader->lindex($list, 0);
          INFO "got element to save: $element";
          my $record = decode_json($element);
          my ($date, $time) = epoch2date_time($record->{epoch});
-         $writer->do("DELETE FROM weight WHERE username = ? AND day = ?",
+         $dbh->do("DELETE FROM weight WHERE username = ? AND day = ?",
             undef, $record->{username}, $date);
          $sth->execute($date, "$date $time", @{$record}{qw< username weight >});
          $reader->lpop($list);
