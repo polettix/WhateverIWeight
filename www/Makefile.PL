@@ -21,6 +21,7 @@ WriteMakefile(
         'JSON' => 0,
         'Redis' => 0,
         'Try::Tiny' => 0,
+        'DotCloud::Environment' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },
