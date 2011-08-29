@@ -154,7 +154,6 @@ ul.weight li a, ul.weight li a:visited {
 }
 #shower-char {
    font-family: monospace;
-   border: 1px solid #aaa;
    text-align: center;
    margin: 0;
    padding: 0 2px;
