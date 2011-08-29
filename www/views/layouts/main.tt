@@ -127,7 +127,7 @@ input.weight {
 div#chooser {
    padding: 0.3em;
    display: none;
-   width: 12em;
+   width: 14em;
    text-align: center;
    position: relative;
    left: 1.1em;
