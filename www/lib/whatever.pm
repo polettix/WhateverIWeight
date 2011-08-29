@@ -11,6 +11,8 @@ our $VERSION = '0.1';
 use Try::Tiny;
 use Time::Local qw( timelocal );
 
+use DotCloud::Environment;
+use lib DotCloud::Environment::find_code_dir(unix => 1) . '/lib';
 use DotCloudStuff qw< get_nosqldb_handle >;
 
 
@@ -69,7 +71,6 @@ post '/export' => sub {
       username => $username,
       email => $email,
    }));
-   my $redis = get_nosqldb_handle();
    $redis->publish('exports', 'whatever');
    flash "recorded export request for $username to $email";
    redirect '/';

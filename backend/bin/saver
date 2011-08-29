@@ -10,13 +10,13 @@ my $VERSION = '0.0.1';
 use Log::Log4perl::Tiny qw( :easy :no_extra_logdie_message );
 Log::Log4perl->easy_init({level=>$INFO, layout=>'[%d %-5p] %m%n'});
 
-use File::Basename qw( dirname );
-use lib dirname(__FILE__) . '/../lib';
-use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
 use JSON qw( decode_json );
 
+use DotCloud::Environment;
+use lib DotCloud::Environment::find_code_dir(unix => 1) . '/lib';;
+use DotCloudStuff qw( get_sqldb_handle get_nosqldb_handle );
+
 my %config = (
-   dotcloud_environment => '/home/dotcloud/environment.json',
    timeout => 60 * 60 * 24 * 365,
 );
 GetOptions(
