@@ -24,7 +24,7 @@ WriteMakefile(
         'Mail::Sender' => 0,
         'Text::CSV_XS' => 0,
         'Try::Tiny' => 0,
-        'DotCloud::Environment' => 0,
+        'DotCloud::Environment' => '0.8.0_04',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'whatever-*' },

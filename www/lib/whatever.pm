@@ -11,8 +11,8 @@ our $VERSION = '0.1';
 use Try::Tiny;
 use Time::Local qw( timelocal );
 
-use DotCloud::Environment;
-use lib DotCloud::Environment::find_code_dir(unix => 1) . '/lib';
+use DotCloud::Environment 'path_for';
+use lib path_for('lib');
 use DotCloudStuff qw< get_nosqldb_handle >;
 
 

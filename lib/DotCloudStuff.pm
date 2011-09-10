@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use English qw( -no_match_vars );
 use Exporter qw( import );
-use DotCloud::Environment;
+use DotCloud::Environment 'dotvars';
 
 our @EXPORT_OK = (
    qw<
@@ -15,10 +15,8 @@ our @EXPORT_OK = (
 );
 
 # Module implementation here
-my $dcenv = DotCloud::Environment->new(backtrack => 1);
-
 sub get_sqldb_handle {
-   my ($host, $port, $user, $pass) = $dcenv->service_vars(
+   my ($host, $port, $user, $pass) = dotvars(
       service => 'sqldb',
       list    => [qw< host port login password >]
    );
@@ -31,7 +29,7 @@ sub get_sqldb_handle {
 } ## end sub get_sqldb_handle
 
 sub get_nosqldb_handle {
-   my ($host, $port, $pass) = $dcenv->service_vars(
+   my ($host, $port, $pass) = dotvars(
       service => 'nosqldb',
       list    => [qw< host port password >]
    );
