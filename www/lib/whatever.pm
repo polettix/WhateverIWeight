@@ -9,7 +9,7 @@ use Dancer;
 use Dancer::Plugin::FlashNote qw( flash );
 our $VERSION = '0.1';
 use Try::Tiny;
-use Time::Local qw( timelocal );
+use Time::Local qw( timelocal timegm );
 
 use DotCloud::Environment 'path_for';
 use lib path_for('lib');
@@ -121,14 +121,27 @@ sub date2epoch {
    return timelocal($sec, $min, $hour, $mday, $month - 1, $year - 1900);
 }
 
+sub date2epochgm {
+   my ($datetime) = @_;
+   my ($year, $month, $mday, $hour, $min, $sec) =
+      $datetime =~ m{
+         \A
+         (\d{4}) [/-] (\d{1,2}) [/-] (\d{1,2})
+         \s+
+         (\d{1,2}) : (\d{1,2}) : (\d{1,2})
+         \z
+      }mxs or die "invalid date format $datetime\n";
+   return timegm($sec, $min, $hour, $mday, $month - 1, $year - 1900);
+}
+
 sub get_weights_of {
    my ($username) = @_;
    my $redis = get_nosqldb_handle();
    my @retval = map {
-      [
-         $redis->get("tstamp:$username:$_")
-            => sprintf '%.1f', $redis->get("weight:$username:$_") / 1000
-      ]
+      my $datetime = $redis->get("tstamp:$username:$_");
+      my $weight_kg   = $redis->get("weight:$username:$_") / 1000;
+      my $epoch_ms = date2epochgm($datetime) * 1000;
+      [ $datetime, $weight_kg, $epoch_ms ];
    } $redis->zrangebyscore("user:$username:dates", '-inf', '+inf');
    return \@retval;
 }

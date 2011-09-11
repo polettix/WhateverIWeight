@@ -4,7 +4,10 @@
    <meta http-equiv="content-type"
       content="text/html; charset=utf-8">
    <title>Whatever</title>
+   <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/js/excanvas.min.js"></script><![endif]-->
    <script type="text/javascript" src="/js/jquery.min.js"></script>
+   <script type="text/javascript">$.noConflict();</script>
+   <script language="javascript" type="text/javascript" src="/js/jquery.flot.min.js"></script>
    <style type="text/css">
 <!--
 html, body {
@@ -160,10 +163,15 @@ ul.weight li a, ul.weight li a:visited {
    padding: 0 2px;
    display: block;
 }
+#placeholder {
+   margin-top: 1em;
+   margin-bottom: 1em;
+   width: 600px;
+   height: 300px;
+}
 -->
    </style>
    <script type="text/javascript">
-<!--
    function toggle_weights() {
       var shower = document.getElementById('shower-char');
       var chooser = document.getElementById('chooser');
@@ -183,7 +191,6 @@ ul.weight li a, ul.weight li a:visited {
       toggle_weights();
       return false;
    }
--->
    </script>
 </head>
 <body>

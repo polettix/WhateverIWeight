@@ -71,14 +71,32 @@
                   <th>Date</th>
                   <th>Weight</th>
                </tr>
-               <% FOR row = weights %>
+               <%
+                  data = [];
+                  FOR row = weights;
+                     data.push("[$row.2,$row.1]");
+               %>
                <tr>
                   <td><% row.0 %></td>
                   <td class="weight"><% row.1 %></td>
                </tr>
                <% END %>
             </table>
+            <div id="placeholder"></div>
+<script type="text/javascript">
+   jQuery(document).ready(function($) {
+      var data = [ [ <% data.join(',') %> ] ];
+      var options = {
+         xaxis: {
+            mode: "time",
+            timeformat: "%y/%0m/%0d"
+         }
+      };
+      $.plot($("#placeholder"), data, options);
+   });
+</script>
          <% END %>
+
 
          </div>
          <div class="clearer"></div>
