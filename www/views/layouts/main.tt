@@ -166,7 +166,7 @@ ul.weight li a, ul.weight li a:visited {
 #placeholder {
    margin-top: 1em;
    margin-bottom: 1em;
-   width: 600px;
+   width: 500px;
    height: 300px;
 }
 -->
